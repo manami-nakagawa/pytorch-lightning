@@ -17,8 +17,8 @@ import platform
 from distutils.version import LooseVersion
 from importlib.util import find_spec
 
-import pkg_resources
 import torch
+from pkg_resources import get_distribution, DistributionNotFound
 
 
 def _module_available(module_path: str) -> bool:
@@ -41,10 +41,11 @@ def _module_available(module_path: str) -> bool:
 
 
 def _compare_version(package: str, op, version) -> bool:
-    if find_spec(package):
-        pkg_version = LooseVersion(pkg_resources.get_distribution(package).version)
+    try:
+        pkg_version = LooseVersion(get_distribution(package).version)
         return op(pkg_version, LooseVersion(version))
-    return False
+    except DistributionNotFound:
+        return False
 
 
 _IS_WINDOWS = platform.system() == "Windows"
