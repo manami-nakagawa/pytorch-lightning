@@ -76,7 +76,7 @@ def wrap_quantize_forward_context(model: pl.core.LightningModule, func: Callable
 
 
 def _recursive_hasattr(obj: Any, attribs: str, state: bool = True) -> bool:
-    """recursive check if model has some layers denoted with `.`"""
+    """recursive check if model has some layers denoted with '.'"""
     if '.' in attribs:
         attrib, attribs = attribs.split('.', 1)
         if hasattr(obj, attrib):
@@ -92,9 +92,7 @@ class QuantizationAwareTraining(Callback):
     We use native PyTorch API so for more information see
      `Quantization <https://pytorch.org/docs/stable/quantization.html#quantization-aware-training>_`
 
-    .. warning::
-
-        Quantization is in beta and subject to change.
+    .. warning:: ``QuantizationAwareTraining`` is in beta and subject to change.
     """
 
     OBSERVER_TYPES = ('histogram', 'average')
