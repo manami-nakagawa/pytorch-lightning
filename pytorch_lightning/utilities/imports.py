@@ -40,7 +40,7 @@ def _module_available(module_path: str) -> bool:
 
 
 def _get_version(package: str) -> LooseVersion:
-    return LooseVersion(pkg_resources.get_distribution(package).version)
+    return LooseVersion(pkg_resources.get_distribution(package))
 
 
 _IS_WINDOWS = platform.system() == "Windows"
