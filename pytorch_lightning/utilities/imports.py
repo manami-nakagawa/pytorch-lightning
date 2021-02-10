@@ -13,6 +13,7 @@
 # limitations under the License.
 """General utilities"""
 import platform
+import operator
 from distutils.version import LooseVersion
 from importlib.util import find_spec
 
@@ -39,14 +40,17 @@ def _module_available(module_path: str) -> bool:
         return False
 
 
-def _get_version(package: str) -> LooseVersion:
-    return LooseVersion(pkg_resources.get_distribution(package))
+def _compare_version(package: str, op, version) -> bool:
+    if find_spec(package):
+        pkg_version = LooseVersion(pkg_resources.get_distribution(package).version)
+        return op(pkg_version, LooseVersion(version))
+    return False
 
 
 _IS_WINDOWS = platform.system() == "Windows"
 
-_TORCH_LOWER_EQUAL_1_4 = _get_version("torch") < LooseVersion("1.5.0")
-_TORCH_GREATER_EQUAL_1_6 = _get_version("torch") >= LooseVersion("1.6.0")
+_TORCH_LOWER_EQUAL_1_4 = _compare_version('torch', operator.lt, "1.5.0")
+_TORCH_GREATER_EQUAL_1_6 = _compare_version('torch', operator.ge, "1.6.0")
 _TORCH_QUANTIZE_AVAILABLE = _module_available('torch.ops.quantized')
 _APEX_AVAILABLE = _module_available("apex.amp")
 _BOLTS_AVAILABLE = _module_available('pl_bolts')
